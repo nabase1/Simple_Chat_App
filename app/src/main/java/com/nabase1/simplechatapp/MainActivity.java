@@ -172,12 +172,12 @@ public void saveGroupChat(View view){
         mMessageDetails.setMessage(mBinding.editTextChart.getText().toString());
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("technical issues");
-        if(!mBinding.editTextChart.getText().toString().isEmpty()){
+        if(!mBinding.editTextChart.getText().toString().isEmpty()) {
             databaseReference.push().setValue(mMessageDetails);
 
             mBinding.editTextChart.setText("");
 
-            mMyAdapter.notifyDataSetChanged();
+            displayChats(mBinding.recylclerView);
         }
 }
 

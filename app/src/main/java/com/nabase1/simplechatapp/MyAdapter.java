@@ -54,7 +54,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.FoodViewHolder>{
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                mMessageDetails.clear();
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    Log.d("snapshot1 key", dataSnapshot1.getKey());
+                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
+                    messageDetails.setId(dataSnapshot1.getKey());
+                    mMessageDetails.add(messageDetails);
+                    //   }
 
+                }
+                notifyItemChanged(mMessageDetails.size()-1);
             }
 
             @Override
