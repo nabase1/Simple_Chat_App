@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,16 +25,16 @@ import java.util.Collections;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.FoodViewHolder>{
 
-    private FirebaseDatabase mFirebaseDatabase;
+
+    private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
     ArrayList<MessageDetails> mMessageDetails;
 
     public MyAdapter(){
 
+        mAuth = FirebaseAuth.getInstance();
         mMessageDetails = new ArrayList<>();
-
-        mFirebaseDatabase = FirebaseUtils.firebaseDatabase;
         mDatabaseReference = FirebaseUtils.databaseReference;
 
         mChildEventListener = new ChildEventListener() {
@@ -68,7 +69,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.FoodViewHolder>{
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                mMessageDetails.clear();
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    Log.d("snapshot1 key", dataSnapshot1.getKey());
+                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
+                    messageDetails.setId(dataSnapshot1.getKey());
+                    mMessageDetails.add(messageDetails);
+                    //   }
 
+                }
+                notifyItemChanged(mMessageDetails.size()-1);
             }
 
             @Override
@@ -107,6 +117,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.FoodViewHolder>{
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
 
        MessageDetails messageDetails = mMessageDetails.get(position);
+       String uid = mAuth.getCurrentUser().getUid();
+       if(!uid.equals(messageDetails.getSenderId())){
+           holder.mBinding.cardViewReceiver.setVisibility(View.GONE);
+           holder.mBinding.cardViewFrom.setVisibility(View.VISIBLE);
+       }else {
+           holder.mBinding.cardViewReceiver.setVisibility(View.VISIBLE);
+           holder.mBinding.cardViewFrom.setVisibility(View.GONE);
+       }
+
         holder.mBinding.setChat(messageDetails);
         holder.mBinding.executePendingBindings();
     }

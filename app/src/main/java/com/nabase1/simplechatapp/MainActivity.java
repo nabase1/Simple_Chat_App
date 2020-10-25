@@ -38,12 +38,9 @@ public class MainActivity extends AppCompatActivity {
     String uid;
     String userName;
     users mUsers;
-    MessageDetails mMessageDetails;
     private static final int My_Code = 1403;
     List<MessageDetails> mMessageDetailsList;
-    private RecyclerView.LayoutManager mLinearLayoutManager;
-    private ChatAdapter mChatAdapter;
-    private MyAdapter mMyAdapter;
+
 
 
     @Override
@@ -55,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseUtils.firebaseDatabase;
         mDatabaseReference = FirebaseUtils.databaseReference;
         mUsers = new users();
-        mMessageDetails = new MessageDetails();
+
         mMessageDetailsList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         checkUser();
-        initialize(mBinding.recylclerView);
+
     }
 
     @Override
@@ -68,30 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /* initialize recyclerView */
-    private void initialize(RecyclerView recyclerView){
-
-        FirebaseUtils.openFirebaseUtils("chat room", this);
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-        if(layoutManager == null){
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        }
-
-        displayChats(mBinding.recylclerView);
-
-    }
-
-
-    /* display chats on recyclerView */
-    private void displayChats(RecyclerView recyclerView){
-        mMyAdapter = (MyAdapter) recyclerView.getAdapter();
-
-        if(mMyAdapter == null){
-            mMyAdapter = new MyAdapter();
-            recyclerView.setAdapter(mMyAdapter);
-        }
-    }
 
     private void checkUser(){
         mFirebaseUser = mAuth.getCurrentUser();
@@ -99,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             uid = mFirebaseUser.getUid();
             userName = mFirebaseUser.getDisplayName();
             mUsers.setName(userName);
+            mUsers.setContact(mFirebaseUser.getPhoneNumber());
 
            // Toast.makeText(this, uid , Toast.LENGTH_SHORT).show();
            // initialize(mBinding.recylclerView);
@@ -116,6 +90,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("uid", uid);
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     if(!dataSnapshot.getKey().equals(uid)){
+                        if(mUsers.getName().equals("")){
+                            mUsers.setName("anonymous");
+                        }
+                        if(mUsers.getContact().equals("")){
+                            mUsers.setContact("");
+                        }
+
+                        mUsers.setEmail(mFirebaseUser.getEmail());
+                        mUsers.setId(uid);
+                        mUsers.setStatus("");
+                        mUsers.setImageUrl("");
+
                         mDatabaseReference.child(uid).setValue(mUsers);
                     }
                 }
@@ -134,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
         //arrays with the providers of authentication type
         providers = Arrays.asList(
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.EmailBuilder().build()
+                new AuthUI.IdpConfig.GoogleBuilder().build()
+               // new AuthUI.IdpConfig.EmailBuilder().build()
         );
 
         startActivityForResult(
@@ -166,20 +152,6 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //}
 
-public void saveGroupChat(View view){
-        mMessageDetails.setSenderId(uid);
-        mMessageDetails.setSenderName(userName);
-        mMessageDetails.setMessage(mBinding.editTextChart.getText().toString());
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("technical issues");
-        if(!mBinding.editTextChart.getText().toString().isEmpty()) {
-            databaseReference.push().setValue(mMessageDetails);
-
-            mBinding.editTextChart.setText("");
-
-            displayChats(mBinding.recylclerView);
-        }
-}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
