@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,15 +33,14 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding mBinding;
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     List<AuthUI.IdpConfig> providers;
     String uid;
     String userName;
     users mUsers;
     private static final int My_Code = 1403;
-    List<MessageDetails> mMessageDetailsList;
-
+    private PagerAdapter mPagerAdapter;
+    private int tabCount;
 
 
     @Override
@@ -49,13 +49,23 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         FirebaseUtils.openFirebaseUtils("users",this);
-        mFirebaseDatabase = FirebaseUtils.firebaseDatabase;
         mDatabaseReference = FirebaseUtils.databaseReference;
         mUsers = new users();
 
-        mMessageDetailsList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         checkUser();
+
+        tabCount = mBinding.tabLayout.getTabCount();
+
+        mPagerAdapter = new PagerAdapter(this, tabCount);
+
+        mBinding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(position));
+            }
+        });
 
     }
 
@@ -65,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBinding.viewPager.setAdapter(mPagerAdapter);
+    }
 
     private void checkUser(){
         mFirebaseUser = mAuth.getCurrentUser();
@@ -75,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             mUsers.setContact(mFirebaseUser.getPhoneNumber());
 
            // Toast.makeText(this, uid , Toast.LENGTH_SHORT).show();
-           // initialize(mBinding.recylclerView);
         }
         else {
             displaySignInButtons();
@@ -134,32 +148,13 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-//private void getChats(){
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("technical issues");
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-//                        messages messages = snapshot.getValue(messages.class);
-//                        mMessagesList.add(messages);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//}
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == My_Code && resultCode == RESULT_OK){
-            registerUser();
             checkUser();
+            registerUser();
         }
     }
 }

@@ -2,6 +2,7 @@ package com.nabase1.simplechatapp;
 
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.nabase1.simplechatapp.databinding.FragmentChatBinding;
+import com.nabase1.simplechatapp.databinding.FragmentGroupChatListBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +29,7 @@ public class GroupChatFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private FragmentChatBinding mChatBinding;
+    private FragmentGroupChatListBinding mChatBinding;
     private MyAdapter mMyAdapter;
     MessageDetails mMessageDetails;
     private FirebaseAuth mAuth;
@@ -83,8 +84,12 @@ public class GroupChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        item = inflater.inflate(R.layout.fragment_chat, container, false);
+        mChatBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_group_chat_list, container, false);
+        item = mChatBinding.getRoot();
+
         initialize(mChatBinding.recylclerView);
+
+        mChatBinding.sendButton.setOnClickListener(View -> saveGroupChat());
 
         return item;
     }
@@ -120,7 +125,7 @@ public class GroupChatFragment extends Fragment {
         }
     }
 
-    public void saveGroupChat(View view){
+    public void saveGroupChat(){
         mMessageDetails.setSenderId(uid);
         mMessageDetails.setSenderName(userName);
         mMessageDetails.setMessage(mChatBinding.editTextChart.getText().toString());
