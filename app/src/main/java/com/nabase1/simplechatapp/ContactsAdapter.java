@@ -37,7 +37,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        users users = dataSnapshot.getValue(users.class);
+                        mUsersList.add(users);
+                    }
+                    notifyItemChanged(mUsersList.size() - 1);
             }
 
             @Override
