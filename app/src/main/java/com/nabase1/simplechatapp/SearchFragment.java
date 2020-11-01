@@ -66,7 +66,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mSearchBinding = DataBindingUtil.inflate(inflater, R.layout.contacts_items, container, false);
+        mSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
 
         initialize(mSearchBinding.recyclerView);
 

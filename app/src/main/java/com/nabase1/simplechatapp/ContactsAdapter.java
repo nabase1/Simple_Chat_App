@@ -1,6 +1,8 @@
 package com.nabase1.simplechatapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,10 @@ import com.nabase1.simplechatapp.databinding.ContactsItemsBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
 
-    private List<users> mUsersList;
+    private List<Users> mUsersList;
     private String uid;
     private FirebaseAuth mAuth;
     private ChildEventListener mChildEventListener;
@@ -33,14 +34,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
         mAuth = FirebaseAuth.getInstance();
         mUsersList = new ArrayList<>();
+        mDatabaseReference = FirebaseUtils.databaseReference;
 
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        users users = dataSnapshot.getValue(users.class);
+                   // for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        Users users = snapshot.getValue(Users.class);
+                        Log.d("users", users.getName());
                         mUsersList.add(users);
-                    }
+                  //  }
                     notifyItemChanged(mUsersList.size() - 1);
             }
 
@@ -81,7 +84,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
-        users users = mUsersList.get(position);
+        Users users = mUsersList.get(position);
 
         if(mAuth.getCurrentUser() != null){
             uid = mAuth.getCurrentUser().getUid();
@@ -97,7 +100,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return mUsersList.size();
     }
 
-    public class ContactsViewHolder extends RecyclerView.ViewHolder{
+    public class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ContactsItemsBinding mBinding;
 
@@ -105,6 +108,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             super(itemView);
 
             mBinding = DataBindingUtil.bind(itemView);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Users users = mUsersList.get(position);
+            Intent intent = new Intent(v.getContext(), UserProfile.class);
+            intent.putExtra("users", users);
+
+            v.getContext().startActivity(intent);
+
         }
     }
 }

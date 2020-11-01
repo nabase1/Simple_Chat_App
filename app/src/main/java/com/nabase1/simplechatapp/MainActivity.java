@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -20,11 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nabase1.simplechatapp.databinding.ActivityMainBinding;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     List<AuthUI.IdpConfig> providers;
     String uid;
     String userName;
-    users mUsers;
+    Users mUsers;
     private static final int My_Code = 1403;
     private PagerAdapter mPagerAdapter;
     private int tabCount;
@@ -50,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUtils.openFirebaseUtils("users",this);
         mDatabaseReference = FirebaseUtils.databaseReference;
-        mUsers = new users();
+        mUsers = new Users();
 
         mAuth = FirebaseAuth.getInstance();
         checkUser();
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             uid = mFirebaseUser.getUid();
             userName = mFirebaseUser.getDisplayName();
             mUsers.setName(userName);
-            mUsers.setContact(mFirebaseUser.getPhoneNumber());
+           // mUsers.setContact(mFirebaseUser.getPhoneNumber());
 
            // Toast.makeText(this, uid , Toast.LENGTH_SHORT).show();
         }
@@ -99,27 +94,17 @@ public class MainActivity extends AppCompatActivity {
     private void registerUser(){
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("snapshot key", snapshot.getKey());
-                Log.d("uid", uid);
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    if(!dataSnapshot.getKey().equals(uid)){
-                        if(mUsers.getName().equals("")){
-                            mUsers.setName("anonymous");
+            public void onDataChange(@NonNull DataSnapshot snapshot) { ;
+                if(snapshot.exists()){
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        if(!dataSnapshot.getKey().equals(uid)){
+                            saveProfile();
                         }
-                        if(mUsers.getContact().equals("")){
-                            mUsers.setContact("");
-                        }
-
-                        mUsers.setEmail(mFirebaseUser.getEmail());
-                        mUsers.setId(uid);
-                        mUsers.setStatus("");
-                        mUsers.setImageUrl("");
-
-                        mDatabaseReference.child(uid).setValue(mUsers);
                     }
                 }
-
+                else {
+                        saveProfile();
+                }
             }
 
             @Override
@@ -127,6 +112,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void saveProfile(){
+        if(mUsers.getName().equals("")){
+            mUsers.setName("anonymous");
+        }
+        mUsers.setEmail(mFirebaseUser.getEmail());
+        mUsers.setId(uid);
+        mUsers.setStatus("Hy, Im on simple chat app now, lol");
+        mUsers.setImageUrl("");
+        mUsers.setContact("");
+
+        mDatabaseReference.child(uid).setValue(mUsers);
+
+        Log.d("regiestered", "registered!");
 
     }
 
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == My_Code && resultCode == RESULT_OK){
             checkUser();
             registerUser();
+
         }
     }
 }

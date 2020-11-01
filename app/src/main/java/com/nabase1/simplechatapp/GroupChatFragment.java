@@ -36,7 +36,7 @@ public class GroupChatFragment extends Fragment {
     private FirebaseUser mFirebaseUser;
     String uid;
     String userName;
-    users mUsers;
+    Users mUsers;
     private View item;
 
     // TODO: Rename and change types of parameters
@@ -75,7 +75,7 @@ public class GroupChatFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mMessageDetails = new MessageDetails();
-        mUsers = new users();
+        mUsers = new Users();
 
         checkUser();
     }

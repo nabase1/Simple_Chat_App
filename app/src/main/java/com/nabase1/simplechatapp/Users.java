@@ -1,6 +1,9 @@
 package com.nabase1.simplechatapp;
 
-public class users {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Users implements Parcelable {
     private String id;
     private String name;
     private String status;
@@ -9,10 +12,10 @@ public class users {
     private String contact;
 
 
-    public users() {
+    public Users() {
     }
 
-    public users(String id, String name, String status, String imageUrl, String email, String contact) {
+    public Users(String id, String name, String status, String imageUrl, String email, String contact) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -20,6 +23,27 @@ public class users {
         this.email = email;
         this.contact = contact;
     }
+
+    protected Users(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        status = in.readString();
+        imageUrl = in.readString();
+        email = in.readString();
+        contact = in.readString();
+    }
+
+    public static final Creator<Users> CREATOR = new Creator<Users>() {
+        @Override
+        public Users createFromParcel(Parcel in) {
+            return new Users(in);
+        }
+
+        @Override
+        public Users[] newArray(int size) {
+            return new Users[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -67,5 +91,20 @@ public class users {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(status);
+        dest.writeString(imageUrl);
+        dest.writeString(email);
+        dest.writeString(contact);
     }
 }
