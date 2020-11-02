@@ -3,11 +3,10 @@ package com.nabase1.simplechatapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.nabase1.simplechatapp.databinding.ActivityMainBinding;
 import com.nabase1.simplechatapp.databinding.ActivityUserProfileBinding;
+import com.nabase1.simplechatapp.model.Users;
 
 public class UserProfile extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.util;
 
 import android.app.Activity;
 import com.google.firebase.auth.FirebaseAuth;

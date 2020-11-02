@@ -1,4 +1,4 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.model;
 
 public class MessageDetails {
 

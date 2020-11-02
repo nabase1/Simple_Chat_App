@@ -1,4 +1,4 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.fragments;
 
 import android.os.Bundle;
 
@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nabase1.simplechatapp.adapter.ContactsAdapter;
+import com.nabase1.simplechatapp.util.FirebaseUtils;
+import com.nabase1.simplechatapp.R;
 import com.nabase1.simplechatapp.databinding.FragmentSearchBinding;
 
 /**

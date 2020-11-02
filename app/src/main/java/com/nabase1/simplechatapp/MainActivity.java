@@ -9,7 +9,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +17,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nabase1.simplechatapp.adapter.PagerAdapter;
 import com.nabase1.simplechatapp.databinding.ActivityMainBinding;
+import com.nabase1.simplechatapp.model.Users;
+import com.nabase1.simplechatapp.util.FirebaseUtils;
 
 import java.util.Arrays;
 import java.util.List;

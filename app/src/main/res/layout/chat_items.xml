@@ -6,7 +6,7 @@
     <data>
         <variable
             name="chat"
-            type="com.nabase1.simplechatapp.MessageDetails" />
+            type="com.nabase1.simplechatapp.model.MessageDetails" />
 
     </data>
 

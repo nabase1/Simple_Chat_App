@@ -1,4 +1,4 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,11 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.nabase1.simplechatapp.util.FirebaseUtils;
+import com.nabase1.simplechatapp.R;
+import com.nabase1.simplechatapp.UserProfile;
 import com.nabase1.simplechatapp.databinding.ContactsItemsBinding;
+import com.nabase1.simplechatapp.model.Users;
 
 import java.util.ArrayList;
 import java.util.List;

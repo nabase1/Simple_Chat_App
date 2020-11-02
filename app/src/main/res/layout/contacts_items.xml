@@ -6,7 +6,7 @@
     <data>
         <variable
             name="user"
-            type="com.nabase1.simplechatapp.Users" />
+            type="com.nabase1.simplechatapp.model.Users" />
     </data>
 
     <androidx.cardview.widget.CardView

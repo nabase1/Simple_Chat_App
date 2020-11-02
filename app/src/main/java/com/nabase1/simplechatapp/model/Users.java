@@ -1,4 +1,4 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

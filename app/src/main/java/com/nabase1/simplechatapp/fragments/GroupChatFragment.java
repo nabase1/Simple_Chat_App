@@ -1,9 +1,12 @@
-package com.nabase1.simplechatapp;
+package com.nabase1.simplechatapp.fragments;
 
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,14 +18,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.nabase1.simplechatapp.Dao;
+import com.nabase1.simplechatapp.util.FirebaseUtils;
+import com.nabase1.simplechatapp.model.MessageDetails;
+import com.nabase1.simplechatapp.adapter.MyAdapter;
+import com.nabase1.simplechatapp.R;
+import com.nabase1.simplechatapp.model.Users;
 import com.nabase1.simplechatapp.databinding.FragmentGroupChatListBinding;
+import com.nabase1.simplechatapp.viewModel.ViewModel;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GroupChatFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupChatFragment extends Fragment {
+public class GroupChatFragment extends Fragment implements Dao {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,6 +54,7 @@ public class GroupChatFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ViewModel mViewModel;
 
     public GroupChatFragment() {
         // Required empty public constructor
@@ -84,11 +97,16 @@ public class GroupChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mChatBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_group_chat_list, container, false);
+        mChatBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_group_chat_list, container, false);
         item = mChatBinding.getRoot();
 
-        initialize(mChatBinding.recylclerView);
 
+
+        mViewModel = new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication()).create(ViewModel.class);
+        mViewModel.init(this);
+
+
+        initialize(mChatBinding.recylclerView);
         mChatBinding.sendButton.setOnClickListener(View -> saveGroupChat());
 
         return item;
@@ -98,6 +116,7 @@ public class GroupChatFragment extends Fragment {
         mFirebaseUser = mAuth.getCurrentUser();
         if(mFirebaseUser != null){
             uid = mFirebaseUser.getUid();
+            userName = mFirebaseUser.getDisplayName();
         }
 
     }
@@ -120,7 +139,7 @@ public class GroupChatFragment extends Fragment {
     private void displayChats(RecyclerView recyclerView){
         mMyAdapter = (MyAdapter) recyclerView.getAdapter();
         if(mMyAdapter == null){
-            mMyAdapter = new MyAdapter();
+            mMyAdapter = new MyAdapter(mViewModel.getMessage().getValue());
             recyclerView.setAdapter(mMyAdapter);
         }
     }
@@ -130,13 +149,17 @@ public class GroupChatFragment extends Fragment {
         mMessageDetails.setSenderName(userName);
         mMessageDetails.setMessage(mChatBinding.editTextChart.getText().toString());
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("technical issues");
         if(!mChatBinding.editTextChart.getText().toString().isEmpty()) {
             if(!uid.equals("")){
-                databaseReference.push().setValue(mMessageDetails);
+                mViewModel.saveGroupChat(mMessageDetails, "technical issues");
             }
             mChatBinding.editTextChart.setText("");
             displayChats(mChatBinding.recylclerView);
         }
+    }
+
+    @Override
+    public void loadGroupMessages() {
+        mViewModel.getMessage().observe(this, MessageDetails -> mMyAdapter.update(MessageDetails));
     }
 }
