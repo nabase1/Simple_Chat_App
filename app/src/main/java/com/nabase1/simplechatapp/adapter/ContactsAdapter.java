@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,45 +35,45 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     private ChildEventListener mChildEventListener;
     private DatabaseReference mDatabaseReference;
 
-    public ContactsAdapter() {
+    public ContactsAdapter(List<Users> usersList) {
 
+        usersList = mUsersList;
         mAuth = FirebaseAuth.getInstance();
-        mUsersList = new ArrayList<>();
         mDatabaseReference = FirebaseUtils.databaseReference;
 
-        mChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                   // for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        Users users = snapshot.getValue(Users.class);
-                        Log.d("users", users.getName());
-                        mUsersList.add(users);
-                  //  }
-                    notifyItemChanged(mUsersList.size() - 1);
-            }
+//        mChildEventListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                   // for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+//                        Users users = snapshot.getValue(Users.class);
+//                        Log.d("users", users.getName());
+//                        mUsersList.add(users);
+//                  //  }
+//                    notifyItemChanged(mUsersList.size() - 1);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        };
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-
-        mDatabaseReference.addChildEventListener(mChildEventListener);
+    //    mDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @NonNull

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,17 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nabase1.simplechatapp.Dao;
 import com.nabase1.simplechatapp.adapter.ContactsAdapter;
 import com.nabase1.simplechatapp.util.FirebaseUtils;
 import com.nabase1.simplechatapp.R;
 import com.nabase1.simplechatapp.databinding.FragmentSearchBinding;
+import com.nabase1.simplechatapp.viewModel.ViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements Dao {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,6 +36,7 @@ public class SearchFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ViewModel mViewModel;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -71,6 +75,9 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         mSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
 
+        mViewModel = new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication()).create(ViewModel.class);
+        mViewModel.init(this);
+
         initialize(mSearchBinding.recyclerView);
 
         return mSearchBinding.getRoot();
@@ -94,8 +101,18 @@ public class SearchFragment extends Fragment {
     private void displayChats(RecyclerView recyclerView){
         mMyAdapter = (ContactsAdapter) recyclerView.getAdapter();
         if(mMyAdapter == null){
-            mMyAdapter = new ContactsAdapter();
+            mMyAdapter = new ContactsAdapter(mViewModel.getContactList().getValue());
             recyclerView.setAdapter(mMyAdapter);
         }
+    }
+
+    @Override
+    public void loadGroupMessages() {
+
+    }
+
+    @Override
+    public void loadContactList() {
+            mViewModel.getContactList().observe(this, Users -> mMyAdapter.notifyDataSetChanged());
     }
 }

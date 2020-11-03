@@ -45,10 +45,6 @@ public class GroupChatFragment extends Fragment implements Dao {
     private MyAdapter mMyAdapter;
     MessageDetails mMessageDetails;
     private FirebaseAuth mAuth;
-    private FirebaseUser mFirebaseUser;
-    String uid;
-    String userName;
-    Users mUsers;
     private View item;
 
     // TODO: Rename and change types of parameters
@@ -86,11 +82,8 @@ public class GroupChatFragment extends Fragment implements Dao {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mAuth = FirebaseAuth.getInstance();
+       // mAuth = FirebaseAuth.getInstance();
         mMessageDetails = new MessageDetails();
-        mUsers = new Users();
-
-        checkUser();
     }
 
     @Override
@@ -100,11 +93,9 @@ public class GroupChatFragment extends Fragment implements Dao {
         mChatBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_group_chat_list, container, false);
         item = mChatBinding.getRoot();
 
-
-
         mViewModel = new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication()).create(ViewModel.class);
         mViewModel.init(this);
-
+        mViewModel.checkUser();
 
         initialize(mChatBinding.recylclerView);
         mChatBinding.sendButton.setOnClickListener(View -> saveGroupChat());
@@ -112,27 +103,15 @@ public class GroupChatFragment extends Fragment implements Dao {
         return item;
     }
 
-    private void checkUser(){
-        mFirebaseUser = mAuth.getCurrentUser();
-        if(mFirebaseUser != null){
-            uid = mFirebaseUser.getUid();
-            userName = mFirebaseUser.getDisplayName();
-        }
-
-    }
-
     /* initialize recyclerView */
     private void initialize(RecyclerView recyclerView){
-
-        FirebaseUtils.openFirebaseUtils("chat room", getActivity());
+       // FirebaseUtils.openFirebaseUtils("chat room", getActivity());
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
         if(layoutManager == null){
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         }
-
         displayChats(mChatBinding.recylclerView);
-
     }
 
     /* display chats on recyclerView */
@@ -144,22 +123,21 @@ public class GroupChatFragment extends Fragment implements Dao {
         }
     }
 
+    /*save and send group message*/
     public void saveGroupChat(){
-        mMessageDetails.setSenderId(uid);
-        mMessageDetails.setSenderName(userName);
-        mMessageDetails.setMessage(mChatBinding.editTextChart.getText().toString());
-
-        if(!mChatBinding.editTextChart.getText().toString().isEmpty()) {
-            if(!uid.equals("")){
-                mViewModel.saveGroupChat(mMessageDetails, "technical issues");
-            }
+        String msg = mChatBinding.editTextChart.getText().toString();
+        mViewModel.saveGroupChat(mMessageDetails, msg,"technical issues");
             mChatBinding.editTextChart.setText("");
             displayChats(mChatBinding.recylclerView);
-        }
     }
 
     @Override
     public void loadGroupMessages() {
         mViewModel.getMessage().observe(this, MessageDetails -> mMyAdapter.update(MessageDetails));
+    }
+
+    @Override
+    public void loadContactList() {
+
     }
 }

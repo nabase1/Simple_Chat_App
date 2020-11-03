@@ -9,4 +9,5 @@ import java.util.List;
 public interface Dao {
     void loadGroupMessages();
 
+    void loadContactList();
 }
