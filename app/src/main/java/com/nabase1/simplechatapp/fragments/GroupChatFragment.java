@@ -1,29 +1,19 @@
 package com.nabase1.simplechatapp.fragments;
 
 import android.os.Bundle;
-
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.Observable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.nabase1.simplechatapp.Dao;
-import com.nabase1.simplechatapp.util.FirebaseUtils;
 import com.nabase1.simplechatapp.model.MessageDetails;
 import com.nabase1.simplechatapp.adapter.MyAdapter;
 import com.nabase1.simplechatapp.R;
-import com.nabase1.simplechatapp.model.Users;
 import com.nabase1.simplechatapp.databinding.FragmentGroupChatListBinding;
 import com.nabase1.simplechatapp.viewModel.ViewModel;
 
@@ -126,7 +116,7 @@ public class GroupChatFragment extends Fragment implements Dao {
     /*save and send group message*/
     public void saveGroupChat(){
         String msg = mChatBinding.editTextChart.getText().toString();
-        mViewModel.saveGroupChat(mMessageDetails, msg,"technical issues");
+        mViewModel.saveGroupChat(mMessageDetails, msg,getString(R.string.node_tech_issues));
             mChatBinding.editTextChart.setText("");
             displayChats(mChatBinding.recylclerView);
     }

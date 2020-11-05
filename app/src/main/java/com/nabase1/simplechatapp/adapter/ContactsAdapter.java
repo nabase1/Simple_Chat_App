@@ -24,7 +24,6 @@ import com.nabase1.simplechatapp.UserProfile;
 import com.nabase1.simplechatapp.databinding.ContactsItemsBinding;
 import com.nabase1.simplechatapp.model.Users;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder> {
@@ -37,43 +36,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     public ContactsAdapter(List<Users> usersList) {
 
-        usersList = mUsersList;
+        mUsersList = usersList;
         mAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseUtils.databaseReference;
 
-//        mChildEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                   // for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-//                        Users users = snapshot.getValue(Users.class);
-//                        Log.d("users", users.getName());
-//                        mUsersList.add(users);
-//                  //  }
-//                    notifyItemChanged(mUsersList.size() - 1);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        };
-
-    //    mDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @NonNull

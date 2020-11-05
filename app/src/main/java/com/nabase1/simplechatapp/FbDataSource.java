@@ -26,7 +26,7 @@ public class FbDataSource {
 
     static FbDataSource instance;
     private List<MessageDetails> mMessageList;
-    private static List<Users> mUsersList;
+    private List<Users> mUsersList;
     private static Dao mDao;
     static Fragment mFragment;
     String uid;
@@ -36,7 +36,7 @@ public class FbDataSource {
     public static FbDataSource getInstance(Fragment fragment){
 
         mFragment = fragment;
-        mUsersList = new ArrayList<>();
+
         if(instance == null){
             instance = new FbDataSource();
         }
@@ -80,44 +80,36 @@ public class FbDataSource {
         messageDetails.setSenderId(uid);
         messageDetails.setSenderName(userName);
         messageDetails.setMessage(msg);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child(chatName);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("group chat").child(chatName);
         if(!msg.isEmpty() && !uid.equals("")){
             databaseReference.push().setValue(messageDetails);
         }
 
     }
 
+    public void saveIndividualChatMsg(MessageDetails messageDetails,String id, String msg){
+        messageDetails.setSenderId(uid);
+        messageDetails.setSenderName(userName);
+        messageDetails.setMessage(msg);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room").child("one to one").child(uid).child(id);
+        if(!msg.isEmpty() && !uid.equals("")) {
+            databaseReference.push().setValue(messageDetails);
+        }
+    }
+
     private void loadGroupMessage() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chat room");
-
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot dataSnapshot1 : snapshot.getChildren()){
-//                    for(DataSnapshot dataSnapshot : dataSnapshot1.getChildren()){
-//                        MessageDetails messageDetails = dataSnapshot.getValue(MessageDetails.class);
-//                        messageDetails.setId(dataSnapshot.getKey());
-//                        mMessageList.add(messageDetails);
-//                    }
-//                }
-//
-//                mDao.loadGroupMessages();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 for(DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                    Log.d("snapshot1 key", dataSnapshot1.getKey());
-                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
-                    messageDetails.setId(dataSnapshot1.getKey());
-                    mMessageList.add(messageDetails);
+                    for(DataSnapshot dataSnapshot : dataSnapshot1.getChildren()){
+                        Log.d("snapshot1 key", dataSnapshot.getKey());
+                        MessageDetails messageDetails = dataSnapshot.getValue(MessageDetails.class);
+                        messageDetails.setId(dataSnapshot.getKey());
+                        mMessageList.add(messageDetails);
+                    }
+
                 }
 
                 mDao.loadGroupMessages();
@@ -128,10 +120,13 @@ public class FbDataSource {
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 mMessageList.clear();
                 for(DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                    Log.d("snapshot1 key", dataSnapshot1.getKey());
-                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
-                    messageDetails.setId(dataSnapshot1.getKey());
-                    mMessageList.add(messageDetails);
+                    for(DataSnapshot dataSnapshot : dataSnapshot1.getChildren()){
+                        Log.d("snapshot1 key", dataSnapshot.getKey());
+                        MessageDetails messageDetails = dataSnapshot.getValue(MessageDetails.class);
+                        messageDetails.setId(dataSnapshot.getKey());
+                        mMessageList.add(messageDetails);
+                    }
+
                 }
                 mDao.loadGroupMessages();
             }
@@ -155,12 +150,14 @@ public class FbDataSource {
     }
 
     private void loadContactList(){
+        mUsersList = new ArrayList<>();
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Users users = snapshot.getValue(Users.class);
                 Log.d("users", users.getName());
                 mUsersList.add(users);
+                mDao.loadContactList();
             }
 
             @Override
@@ -185,10 +182,13 @@ public class FbDataSource {
         };
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-
         databaseReference.addChildEventListener(mChildEventListener);
 
-        mDao.loadContactList();
+
+    }
+
+    private void loadIndividualMessages(){
+
     }
 
 

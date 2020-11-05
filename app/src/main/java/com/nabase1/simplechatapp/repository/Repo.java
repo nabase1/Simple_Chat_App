@@ -37,5 +37,9 @@ public class Repo {
         mDataSource.saveGroupChat(messageDetails, msg, chatName);
     }
 
+    public void saveOneToOneChatMsg(MessageDetails messageDetails,String id, String msg){
+        mDataSource.saveIndividualChatMsg(messageDetails,id,msg);
+    }
+
 
 }

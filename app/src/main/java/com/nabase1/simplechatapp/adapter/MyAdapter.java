@@ -28,73 +28,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.FoodViewHolder>{
 
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabaseReference;
-    private ChildEventListener mChildEventListener;
     private List<MessageDetails> mMessageDetails;
 
     public MyAdapter(List<MessageDetails> messageDetails){
 
         mAuth = FirebaseAuth.getInstance();
         mMessageDetails = messageDetails;
-        mDatabaseReference = FirebaseUtils.databaseReference;
-
-//        mChildEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//               // for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-//                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-//                        Log.d("snapshot1 key", dataSnapshot1.getKey());
-//                        MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
-//                        messageDetails.setId(dataSnapshot1.getKey());
-//                        mMessageDetails.add(messageDetails);
-//                 //   }
-//
-//                }
-//                notifyItemChanged(mMessageDetails.size()-1);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                mMessageDetails.clear();
-//                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-//                    Log.d("snapshot1 key", dataSnapshot1.getKey());
-//                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
-//                    messageDetails.setId(dataSnapshot1.getKey());
-//                    mMessageDetails.add(messageDetails);
-//                    //   }
-//
-//                }
-//                notifyItemChanged(mMessageDetails.size()-1);
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//                mMessageDetails.clear();
-//                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-//                    Log.d("snapshot1 key", dataSnapshot1.getKey());
-//                    MessageDetails messageDetails = dataSnapshot1.getValue(MessageDetails.class);
-//                    messageDetails.setId(dataSnapshot1.getKey());
-//                    mMessageDetails.add(messageDetails);
-//                    //   }
-//
-//                }
-//                notifyItemChanged(mMessageDetails.size()-1);
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-
-       // mDatabaseReference.addChildEventListener(mChildEventListener);
-
     }
 
     @NonNull

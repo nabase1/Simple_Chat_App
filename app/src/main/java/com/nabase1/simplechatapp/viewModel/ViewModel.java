@@ -29,7 +29,7 @@ public class ViewModel extends AndroidViewModel {
 
     public void init(Fragment context){
         mFragment = context;
-        if(mMessageList!=null){
+        if(mMessageList!=null || mUserList!=null){
             return;
         }
         mRepo = new Repo(mFragment);
@@ -51,5 +51,9 @@ public class ViewModel extends AndroidViewModel {
 
     public void saveGroupChat(MessageDetails messageDetails, String msg, String chatName){
          mRepo.saveGroupChat(messageDetails, msg, chatName);
+    }
+
+    public void saveOneToOneChat(MessageDetails messageDetails, String id, String msg){
+        mRepo.saveOneToOneChatMsg(messageDetails,id,msg);
     }
 }
